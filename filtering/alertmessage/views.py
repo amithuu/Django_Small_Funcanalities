@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView
 from alertmessage.serializers import JobSerializer
+from alertmessage.models import Job
 from rest_framework.response import Response
 from rest_framework.validators import ValidationError
 # Create your views here
@@ -32,4 +33,35 @@ class JobCreateAPIView(CreateAPIView):
             return Response({'message':'failed to create job','error':str(e)})    
         
         
+class JobListAPIView(ListAPIView):
+    serializer_class =JobSerializer
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            queryset = Job.objects.all()
             
+            query_list = {
+                'title' : 'job_title__icontains',
+                'location':'location__icontains',
+                'type': 'job_type__icontains', 
+                'include_freshers' : 'include_freshers',
+            }
+            
+            filters = {}
+            
+            for param, model_name in query_list.items():
+                value = self.request.query_params.get(param, None)
+                if value:
+                    filters[model_name] = value
+            queryset = queryset.filter(**filters)
+            
+            serializer = self.get_serializer(queryset, many=True).data
+
+            if serializer:
+                return Response({'message': 'List of Jobs', 'data': serializer})
+            else:
+                return Response({'message': 'No jobs listed..', 'data':[]})
+            
+        except Exception as e:
+            return Response({'message':'failure','error': str(e)})
+        

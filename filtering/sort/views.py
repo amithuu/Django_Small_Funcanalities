@@ -64,6 +64,7 @@ class MovieListAPIView(ListAPIView):
                 'ranking': 'total_ratings',
                 'created':'movie_created',
             }
+            
             filters = {}
             
             for param, model_name in parameter.items():
