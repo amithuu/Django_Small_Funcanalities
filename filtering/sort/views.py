@@ -62,20 +62,27 @@ class MovieListAPIView(ListAPIView):
                 'name':'movie_name__icontains',
                 'status': 'movie_status',
                 'ranking': 'total_ratings',
-                'created':'movie_created',
+                'created_year':'movie_created',
             }
+            
             filters = {}
+            add = {}
             
             for param, model_name in parameter.items():
                 value = self.request.query_params.get(param, None) # ? status = self.request.query_params.get('status', None)
                 if value:
                     filters[model_name] = value 
+                    # add[param] = value # for saved search
                     
+
+            # url = f'http://127.0.0.1:8000/filter?' + '&'.join([f'{param}={value}' for param, value in add.items()])
+            
+            
             queryset = queryset.filter(**filters)  # ? queryset = queryset.filter(movie_status = status)
-        
+
             serializer = self.get_serializer(queryset, many=True).data
             
-            return Response({'message':'Success', 'data':serializer})           
+            return Response({'message':'Success', 'data':serializer}) #'saved_url': url})           
     
 
         except Exception as e:
