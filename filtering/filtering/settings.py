@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # ? created app
     'rest_framework',
     'sort',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

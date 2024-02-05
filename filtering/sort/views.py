@@ -72,19 +72,49 @@ class MovieListAPIView(ListAPIView):
                 value = self.request.query_params.get(param, None) # ? status = self.request.query_params.get('status', None)
                 if value:
                     filters[model_name] = value 
-                    # add[param] = value # for saved search
-                    
-
-            # url = f'http://127.0.0.1:8000/filter?' + '&'.join([f'{param}={value}' for param, value in add.items()])
-            
             
             queryset = queryset.filter(**filters)  # ? queryset = queryset.filter(movie_status = status)
 
             serializer = self.get_serializer(queryset, many=True).data
             
-            return Response({'message':'Success', 'data':serializer}) #'saved_url': url})           
+            return Response({'message':'Success', 'data':serializer})          
     
 
         except Exception as e:
             return Response({'message': 'Fail', "error": str(e)})
+
+
+
+# ? Using the customized Filter [filters.py] by django_filters
+# from sort.filters import MovieFilter
+# class MovieFilter(ListAPIView):
+#     serializer_class = MovieSerializer
+#     filter_class = MovieFilter
+    
+#     def get(self, request, *args, **kwargs):
+#         movie_filter = self.filter_class(request.GET,queryset=Movie.objects.all())
+#         serializer = self.get_serializer(movie_filter.qs, many=True).data
+        
+#         return Response({'data':serializer})
+    
+
+
+# ? Using django_filter rest_framework DjangoFilterBackend   
+
+# from django_filters.rest_framework import DjangoFilterBackend
+# from sort.filters import MovieFilter
+
+# class MovieFilterBackend(ListAPIView):
+#     queryset = Movie.objects.all()
+#     serializer_class = MovieSerializer
+#     filter_backends = (DjangoFilterBackend,)
+#     filterset_class = MovieFilter
+    
+    # ? if need o/p in postman use def get() else dont use, u will get filters in browser itself..
+    # def get(self, request, *args, **kwargs):
+    #     movie_filter = self.filterset_class(request.GET,queryset=Movie.objects.all())
+    #     serializer = self.get_serializer(movie_filter.qs, many=True).data
+    #     return Response({'data':serializer})
+        
+    
     
