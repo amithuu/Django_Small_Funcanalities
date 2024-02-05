@@ -65,9 +65,9 @@ class MovieListAPIView(ListAPIView):
         try:
             parameter = {
                 'name':'movie_name__icontains',
-                'status': 'movie_status',
+                'status': 'movie_status__icontains',
                 'ranking': 'total_ratings',
-                'created_year':'movie_created',
+                'created_year':'movie_created__icontains',
             }
             
             filters = {}
