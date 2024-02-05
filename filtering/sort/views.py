@@ -2,11 +2,10 @@ from django.shortcuts import render
 
 # Create your views here.
 from sort import serializers 
-from sort.models import Movie#, Saved_Search
+from sort.models import Movie
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-# from django.contrib.auth.models import User
 
 class MovieCreateView(CreateAPIView):
     serializer_class = serializers.MovieSerializer
@@ -72,46 +71,19 @@ class MovieListAPIView(ListAPIView):
             }
             
             filters = {}
-            # add = {}
             
             for param, model_name in parameter.items():
                 value = self.request.query_params.get(param, None) # ? status = self.request.query_params.get('status', None)
                 if value:
                     filters[model_name] = value 
-                    # add[param] = value # for saved search
-                    
-            # user = self.request.user
-            # user = User.objects.get(username ='amith') # as there is no user auth, so i am using the default value to to sort the user.. and save the data using user as well..
-            
-            # url = f'http://127.0.0.1:8000/filter?' + '&'.join([f'{param}={value}' for param, value in add.items()])
-            
-            # search = Saved_Search.objects.create(saved = url, user=user)
-            # print(search)
             
             queryset = queryset.filter(**filters)  # ? queryset = queryset.filter(movie_status = status)
 
             serializer = self.get_serializer(queryset, many=True).data
             
-            return Response({'message':'Success', 'data':serializer})#, 'saved_url': url})           
+            return Response({'message':'Success', 'data':serializer})         
     
 
         except Exception as e:
             return Response({'message': 'Fail', "error": str(e)})
-        
-
-# class SavedUrlAPiView(ListAPIView):
-#     serializer_class = serializers.Saved_Serializer
-    
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             user = self.request.query_params.get('user', None)
-            
-#             serializer = self.get_serializer(Saved_Search.objects.filter(user=user), many=True).data
-#             if serializer:
-#                 return Response({'message': 'successfully', 'data': serializer})
-#             else:
-#                 return Response({'message': 'No Saved Searched For this User', 'data': []})
-                
-#         except Exception as e:
-#             return Response({'message': 'error', 'error':str(e)})
 
