@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # ? created app
     'rest_framework',
     'sort',
+    'save_search',
 ]
 
 MIDDLEWARE = [

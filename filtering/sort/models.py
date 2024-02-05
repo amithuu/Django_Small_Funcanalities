@@ -1,5 +1,5 @@
 from django.db import models
-
+# from django.contrib.auth.models import User  
 # Create your models here.
 class Movie(models.Model):
     movie_name = models.CharField(max_length=20)
@@ -13,4 +13,9 @@ class Movie(models.Model):
         return self.movie_name
     
 
+# class Saved_Search(models.Model):
+#     user = models.ForeignKey(User,on_delete=models.CASCADE)
+#     saved = models.URLField()
     
+#     def __str__(self):
+#         return self.saved
