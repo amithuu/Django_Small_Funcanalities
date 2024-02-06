@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # ? created app
     'rest_framework',
     'sort',
+    'user_model',
 ]
 
 MIDDLEWARE = [

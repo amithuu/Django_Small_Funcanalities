@@ -2,6 +2,7 @@
     "cSpell.words": [
         "createsuperuser",
         "createuser",
-        "setdefault"
+        "setdefault",
+        "ugettext"
     ]
 }
