@@ -1,14 +1,15 @@
 
 from rest_framework import serializers
-from .models import CustomerUser
+from .models import CustomerUser, OtpLog
 from django.utils.text import slugify
-
+from rest_framework.validators import ValidationError 
 class CustomerUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
-    
+    token = serializers.CharField()
+    otp = serializers.IntegerField()
     class Meta:
         model = CustomerUser
-        fields = ['email', 'first_name', 'last_name', 'phone_number','password', 'confirm_password']
+        fields = ['email', 'first_name', 'last_name', 'phone_number','password', 'confirm_password','token','otp']
         
         # as we dont want to show in User Details..
         extra_kwargs={
@@ -23,7 +24,6 @@ class CustomerUserSerializer(serializers.ModelSerializer):
         
         if len(str(value['phone_number'])) < 10:
             raise serializers.ValidationError('invalid mobile number')
-        
         del value['confirm_password']
         
         return value
@@ -42,3 +42,30 @@ class CustomerUserSerializer(serializers.ModelSerializer):
         return CustomerUser.objects.create_user(**validated_data)
     
     
+    
+class EmailOtpRequestSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = OtpLog
+        fields = ['email',]
+        
+class EmailOtpValidateSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = OtpLog
+        fields = ['email','token','otp']
+        
+    def validate(self, value):
+        if len(str(value))!= 6:
+            raise ValidationError('please enter correct otp')
+
+        return value
+    
+    def validate(self, value):
+        otp_log = OtpLog.objects.filter(
+            type='email_otp', email=value['email'],token = value['token'], otp=value['otp']
+        ).exists()
+        
+        if not otp_log:
+            raise ValidationError('invalid otp')
+        return value
