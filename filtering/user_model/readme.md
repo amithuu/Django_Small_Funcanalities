@@ -1,3 +1,7 @@
+# This Entire model is made for user registration and email otp and token..  
+
+
+
 # we have to import AbstractUser
         * there are 2 types of users [abstractUser, AbstractBaseUser]
       * AbstractUser : we can define our own user class
@@ -42,3 +46,6 @@
 
 *  import [get_user_model] from [django.contrib.auth]
 *  Create instance [User=get_user_model()] 
+
+
+

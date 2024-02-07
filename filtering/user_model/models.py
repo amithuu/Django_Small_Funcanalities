@@ -23,7 +23,7 @@ class CustomerUser(AbstractUser):
 
 class OtpLog(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    token = models.CharField(max_length=20,null=True)
+    token = models.CharField(max_length=200,null=True)
     otp = models.IntegerField(null=True)
     email = models.EmailField(null=True)
     contact = models.CharField(max_length=20, null=True)
@@ -31,5 +31,4 @@ class OtpLog(models.Model):
     status = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.token
-    
+        return self.email

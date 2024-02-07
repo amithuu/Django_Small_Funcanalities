@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from rest_framework.validators import ValidationError 
 class CustomerUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
-    token = serializers.CharField()
+    token = serializers.CharField(max_length=200)
     otp = serializers.IntegerField()
     class Meta:
         model = CustomerUser
@@ -26,6 +26,11 @@ class CustomerUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('invalid mobile number')
         del value['confirm_password']
         
+        otp_log = OtpLog.objects.filter(email=value['email'], token=value['token'], otp=value['otp'])
+        # print(type(otp_log['token']))
+        if not otp_log:
+            raise serializers.ValidationError('otp invalid or expired')
+        
         return value
     
     def generate_unique_username(self, email):
@@ -39,8 +44,16 @@ class CustomerUserSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['username'] = self.generate_unique_username(validated_data['email'])
-        return CustomerUser.objects.create_user(**validated_data)
-    
+        token = validated_data.pop('token', None)
+        otp = validated_data.pop('otp', None)
+        
+        user =  CustomerUser.objects.create_user(**validated_data)
+        OtpLog.objects.filter(email=user.email).update(user=user)
+
+        user.token = token
+        user.otp = otp
+        user.save()
+        return user
     
     
 class EmailOtpRequestSerializer(serializers.ModelSerializer):

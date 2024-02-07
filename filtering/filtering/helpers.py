@@ -6,6 +6,7 @@ from hashlib import sha224
 import math, random
 
 def generate_token(email=''):
+    token = ''
     try:
         alpha = [c for c in 'abcdefghijklmnopqrstuvwxyz']
         shuffle(alpha)

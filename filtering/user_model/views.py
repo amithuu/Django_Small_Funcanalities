@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from .models import CustomerUser
+from .models import CustomerUser, OtpLog
 from . import serializers
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView
 from rest_framework.validators import ValidationError
 from filtering.helpers import  send_otp_email
+# from rest_framework.simplejwt.token import RefreshToken
 from django.contrib.auth import get_user_model
 # Create your views here.
 
@@ -20,7 +21,11 @@ class CustomUserCreateApiView(ListCreateAPIView):
             if not serializer.is_valid(raise_exception=True):
                 return ValidationError(serializer.errors)
             
+            
             serializer.save()
+            # data = serializer.data
+            # data={}
+            # data['token'] =  
             return Response({'data':serializer.data})
         
         except Exception as e:
