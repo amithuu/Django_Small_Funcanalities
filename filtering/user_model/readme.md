@@ -1,23 +1,13 @@
-#  This model is for adding Jwt Token auth for login and logout.. and while Registration as well ..
+# In this Model We are Trying to Logout user using [simplejwtToken]
 
-* Install [pip_install_djangorestframework-simplejwt]
+# In Setting.py
 
-# In setting.py 
+* ['rest_framework_simplejwt.token_blacklist'],
 
-* REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-} 
+* In View.py Create a view for logout, collecting the [refresh_token] and adding [permission_class=(IsAuthenticated,)]
+* add that [refresh_token] to [RefreshToken(refresh_token).blacklist()]
+* Send message 
 
-* INSTALLED_APPS = [
-    ...
-    'rest_framework_simplejwt',
-    ...
-]
-
-* Create a serializer for [LoginSerializer] to take email and password #! dnt user model serializer [why? in serializer itself]
-* create view and import [authentication] from [django.contrib.auth]
-* pass the user details email and password form the serializer
-* Add import  [RefreshToken] from [rest_framework_simplejwt.token]
-* User the [RefreshToken.for_user(user)] to get the ['refresh'] and ['access_token']
+# In post man
+* Login and collect the [access_token] and paste in [BearerToken]
+* Collect the [refresh_token] and paste in [body]

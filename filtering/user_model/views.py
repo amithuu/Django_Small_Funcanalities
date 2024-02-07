@@ -123,4 +123,28 @@ class LoginAPIView(CreateAPIView):
         except Exception as e:
             return Response({"error": str(e)})
         
+from rest_framework.permissions import AllowAny, IsAuthenticated
+class LogoutAPiView(CreateAPIView):
+    
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        try:
+            refresh_token = request.data['refresh']
+            token = RefreshToken(refresh_token).blacklist()
             
+            return Response({"Logout":'Successfully Logged out'})
+        
+        except Exception as e:
+            return Response({
+                "detail": "Given token not valid for any token type",
+                "code": "token_not_valid",
+                "messages": [
+                    {
+                        "token_class": "AccessToken",
+                        "token_type": "access",
+                        "message": "Token is invalid or expired"
+                    }
+                ]
+})
+
+# ! Need to pass [access_token] in Bearer and [refresh_token] in Body.. 

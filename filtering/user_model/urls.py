@@ -7,6 +7,8 @@ urlpatterns = [
     path('register', views.CustomUserCreateApiView.as_view(), name = 'register'),
     path('email_otp/request', views.EmailOtpRequestApiView.as_view(), name='email-otp-request'),
     path('email_otp/validate', views.EmailOtpValidateAPIView.as_view(), name='email-otp-request'),
-    path('login/', views.LoginAPIView.as_view(), name = 'login'), 
+    path('login', views.LoginAPIView.as_view(), name = 'login'),
+    path('logout', views.LogoutAPiView.as_view(), name = 'logout'),
+    
 ]
 
