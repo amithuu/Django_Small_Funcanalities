@@ -55,7 +55,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    
+
 class EmailOtpRequestSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -82,3 +82,18 @@ class EmailOtpValidateSerializer(serializers.ModelSerializer):
         if not otp_log:
             raise ValidationError('invalid otp')
         return value
+
+from django.contrib.auth import authenticate
+class LoginSerializer(serializers.Serializer):
+    
+    email = serializers.CharField()
+    password = serializers.CharField()
+    
+    # def validate(self, data):
+    #     user = authenticate(**data)
+    #     if user and user.is_active:
+    #         return user
+    #     raise ValidationError(' email or password is invalid..')
+
+# Todo: It is good to user serializer.Serializer instead of model serializer,
+        # Todo: because we are not fetching or modifying the data from table, so it is better to user normal Serializer in these cases..

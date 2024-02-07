@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView
 from rest_framework.validators import ValidationError
 from filtering.helpers import  send_otp_email
-# from rest_framework.simplejwt.token import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken  # for register and login to check the login..
+from django.contrib.auth import authenticate # for login..
 from django.contrib.auth import get_user_model
 # Create your views here.
 
@@ -23,10 +24,18 @@ class CustomUserCreateApiView(ListCreateAPIView):
             
             
             serializer.save()
-            # data = serializer.data
-            # data={}
-            # data['token'] =  
-            return Response({'data':serializer.data})
+            user = serializer.instance
+            
+            refresh = RefreshToken.for_user(user)
+            
+            data = {}
+            data['id'] = user.id
+            data['token'] = {
+                'refresh':str(refresh),
+                'access':str(refresh.access_token),
+            }
+            
+            return Response({'data':data})
         
         except Exception as e:
             return Response({'error':str(e)})
@@ -42,7 +51,10 @@ class CustomUserCreateApiView(ListCreateAPIView):
         
         except Exception as e:
             return Response({'error':str(e)})
-    
+
+
+
+
 
 class EmailOtpRequestApiView(CreateAPIView):
     serializer_class = serializers.EmailOtpRequestSerializer
@@ -76,4 +88,39 @@ class EmailOtpValidateAPIView(CreateAPIView):
         
         return Response({'ok':'ok'})
     
+
+
+class LoginAPIView(CreateAPIView):
+    serializer_class = serializers.LoginSerializer
     
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data = request.data)
+            
+            if not serializer.is_valid(raise_exception=True):
+                return ValidationError('login already exists')
+            
+            # email = serializer.data['email']
+            # password = serializer.data['password']
+            data = serializer.data
+            user = authenticate(**data)
+            
+            # ? if you use validate in serializer then use this here..
+            # user = serializer.data
+            
+            refresh = RefreshToken.for_user(user)
+
+            data = {}
+            
+            data['id']=user.id
+            data['token'] = {
+                'refresh':str(refresh),
+                'access_token':str(refresh.access_token),
+            }
+            
+            return Response({'data':data})
+
+        except Exception as e:
+            return Response({"error": str(e)})
+        
+            
