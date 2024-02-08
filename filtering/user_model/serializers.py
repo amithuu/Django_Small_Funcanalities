@@ -26,7 +26,7 @@ class CustomerUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('invalid mobile number')
         del value['confirm_password']
         
-        otp_log = OtpLog.objects.filter(email=value['email'], token=value['token'], otp=value['otp'])
+        otp_log = OtpLog.objects.filter(email=value['email'], token=value['token'], otp=value['otp']).exists()
         # print(type(otp_log['token']))
         if not otp_log:
             raise serializers.ValidationError('otp invalid or expired')
@@ -89,7 +89,7 @@ class EmailOtpValidateSerializer(serializers.ModelSerializer):
 from django.contrib.auth import authenticate
 class LoginSerializer(serializers.Serializer):
     
-    email = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField()
     
     # def validate(self, data):
@@ -135,5 +135,55 @@ class PasswordChangeSerializer(serializers.Serializer):
         return instance
     
     
+    
+
+class ForgetPasswordOtpSerializer(serializers.Serializer):
+    
+    email  = serializers.EmailField()
+    
+    def validate_email(sel, value):
+        if not CustomerUser.objects.filter(email=value).exists():
+            raise ValidationError('Invalid Email')
+        return value
+    
+
+class ForgetPasswordOtpValidateSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    token = serializers.CharField()
+    otp = serializers.IntegerField()
+
+    def validate(self, value):
+        if len(str(value['otp']))!= 6:
+            raise ValidationError('invalid otp')
+        
+        otp_log = OtpLog.objects.filter(email = value['email'], token = value['token'], otp=value['otp']).exists()
+        
+        if not otp_log:
+            raise ValidationError('invalid otp')
+    
+        return value 
+
+class ChangePasswordOtpValidateSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    token = serializers.CharField()
+    otp = serializers.IntegerField()
+    password = serializers.CharField()
+    confirm_password = serializers.CharField()
+    
+    
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+
+    def validate(self, value):
+        if value['password']!=value['confirm_password']:
+            raise ValidationError("password must match")
+        
+        otp_log = OtpLog.objects.filter(email = value['email'], token = value['token'], otp=value['otp']).exists()
+        
+        if not otp_log:
+            raise ValidationError('invalid otp')
+        
+        return value
     
     

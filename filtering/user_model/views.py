@@ -170,3 +170,63 @@ class PasswordChangeAPiView(CreateAPIView):
         except Exception as e:
             return Response({'message': str(e)})
         
+
+
+class ForgetPasswordOtpApiView(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.ForgetPasswordOtpSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        
+        serializer.is_valid(raise_exception=True)
+        
+        data = serializer.data
+        
+        otp_token = send_otp_email(data.get('email'))
+        
+        if otp_token == None:
+            return Response({"error": 'Something went wrong'})
+        
+        data = {}
+        data = {
+            'otp': otp_token['otp'],
+            'token': otp_token['token'],
+        }
+        return Response({"success":data})
+        
+
+class ForgetPasswordOtpValidateAPIView(CreateAPIView):
+    permission_classes = [AllowAny,]
+    serializer_class = serializers.ForgetPasswordOtpValidateSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        
+        serializer.is_valid(raise_exception=True)
+        
+        return Response({'message':'ok'})
+    
+
+class ChangePasswordOtpValidateAPiView(CreateAPIView):
+    permission_classes = [AllowAny,]
+    serializer_class = serializers.ChangePasswordOtpValidateSerializer
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            
+            user = CustomerUser.objects.get(email = request.data.get('email'))
+            if not user:
+                raise ValidationError("invalid user")
+            
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            
+            data = serializer.data
+            user.set_password(data['password'])
+            user.save()
+            return Response({'success': 'Password changed','password':data['password']})
+    
+        except Exception as e:
+            return Response({'error':str(e)})
+    
