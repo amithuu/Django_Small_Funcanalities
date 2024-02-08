@@ -9,6 +9,6 @@ urlpatterns = [
     path('email_otp/validate', views.EmailOtpValidateAPIView.as_view(), name='email-otp-request'),
     path('login', views.LoginAPIView.as_view(), name = 'login'),
     path('logout', views.LogoutAPiView.as_view(), name = 'logout'),
-    
+    path('password_change', views.PasswordChangeAPiView.as_view(), name = 'password_change'),
 ]
 

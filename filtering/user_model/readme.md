@@ -1,13 +1,13 @@
-# In this Model We are Trying to Logout user using [simplejwtToken]
+# In this we try to learn about Changing the old password to new password..
 
-# In Setting.py
+* [check_password(old_password)] using this function we check for the old_password from the table..
 
-* ['rest_framework_simplejwt.token_blacklist'],
+* [validate_password(new_password)] using this function we check for the parameters required for the password to set..
 
-* In View.py Create a view for logout, collecting the [refresh_token] and adding [permission_class=(IsAuthenticated,)]
-* add that [refresh_token] to [RefreshToken(refresh_token).blacklist()]
-* Send message 
+* Validate for [new_password] and [old_password] are same or not..
 
-# In post man
-* Login and collect the [access_token] and paste in [BearerToken]
-* Collect the [refresh_token] and paste in [body]
+* Using [update(instance,validated_data] , [instance-data] [validated_data-new_data]  update the [instance.set_password(validated_data)]
+
+* Save the Instance [instance.save()] 
+* return it as well..
+* 

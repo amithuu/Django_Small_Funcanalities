@@ -83,6 +83,9 @@ class EmailOtpValidateSerializer(serializers.ModelSerializer):
             raise ValidationError('invalid otp')
         return value
 
+
+
+
 from django.contrib.auth import authenticate
 class LoginSerializer(serializers.Serializer):
     
@@ -97,3 +100,40 @@ class LoginSerializer(serializers.Serializer):
 
 # Todo: It is good to user serializer.Serializer instead of model serializer,
         # Todo: because we are not fetching or modifying the data from table, so it is better to user normal Serializer in these cases..
+
+
+from django.contrib.auth.password_validation import validate_password
+class PasswordChangeSerializer(serializers.Serializer):
+    
+    old_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+    
+    # Validating whether old password from the table is same or not using # !{check_password()}
+    def validate_old_password(self,value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise ValidationError({'old_password': "old password entered is wrong"})
+        return value
+    
+    # Validating the provided new_password matches the password criteria or not using # ! {validate_password()}
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+    
+    
+    # ? Validating whether the new_password and confirm_password is same or not 
+    def validate(self, value):
+        if value['new_password'] != value['confirm_password']:
+            raise ValidationError(" passwords must be same")
+        return value
+    
+    # Updating the old data with new data from teh table..
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
+    
+    
+    
+    

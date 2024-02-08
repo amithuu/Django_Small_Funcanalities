@@ -148,3 +148,25 @@ class LogoutAPiView(CreateAPIView):
 })
 
 # ! Need to pass [access_token] in Bearer and [refresh_token] in Body.. 
+
+
+
+class PasswordChangeAPiView(CreateAPIView):
+    
+    permission_classes = [IsAuthenticated,]
+    serializer_class = serializers.PasswordChangeSerializer
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            serializer = self.get_serializer(instance = user,data = request.data) # instance is for changing old_password to new_password of the user.. 
+
+            serializer.is_valid(raise_exception=True)
+
+            serializer.save()
+
+            return Response({'message': 'Password changed'})
+    
+        except Exception as e:
+            return Response({'message': str(e)})
+        
