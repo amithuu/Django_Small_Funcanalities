@@ -126,7 +126,7 @@ class LoginAPIView(CreateAPIView):
 from rest_framework.permissions import AllowAny, IsAuthenticated
 class LogoutAPiView(CreateAPIView):
     
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     def post(self, request, *args, **kwargs):
         try:
             refresh_token = request.data['refresh']
