@@ -188,7 +188,6 @@ class ChangePasswordOtpValidateSerializer(serializers.Serializer):
     
     
 class ProfileSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Profile
         fields = ['avatar','bio']

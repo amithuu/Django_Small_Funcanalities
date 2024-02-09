@@ -241,6 +241,10 @@ class ProfileAPiView(ListCreateAPIView):
         
         try:
             
+            existing_profile = Profile.objects.filter(user = request.user, avatar__isnull=False).first()
+            if existing_profile:
+                return Response({'message': 'Profile already exists'})
+            
             # request.data['user'] = request.user.id
             data = self.get_serializer(data = request.data)
 
@@ -250,7 +254,7 @@ class ProfileAPiView(ListCreateAPIView):
             
             return Response({'data':data.data})
         except Exception as e:
-            return Response({'error':str(e),'message':'Profile picture already exists'})
+            return Response({'error':str(e)})
             
     
     def get(self, request, *args, **kwargs):
