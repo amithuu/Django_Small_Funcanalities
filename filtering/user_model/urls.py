@@ -15,5 +15,5 @@ urlpatterns = [
     path('forget_password/validate', views.ForgetPasswordOtpValidateAPIView.as_view(), name = 'forget_password_validate'),
     path('change_password',  views.ChangePasswordOtpValidateAPiView.as_view(), name = 'change_password'),
     
+    path('user_profile', views.ProfileAPiView.as_view(), name = 'user_profile'),
 ]
-

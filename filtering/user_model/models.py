@@ -33,7 +33,15 @@ class OtpLog(models.Model):
     def __str__(self):
         return self.email
     
-    
-class Profile(models.Models):
+# https://cv-builder.talentplace.ai/uploads
+# def avatar(instance,filename):
+#     return 'uploads/{}/{}'.format(instance.user_id, filename)
+
+ 
+class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL , on_delete = models.CASCADE)
+    avatar = models.ImageField(upload_to = 'avatar', blank=True)
+    bio = models.CharField(max_length=255, blank=True)
     
+    def __str__(self):
+        return self.user.email

@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import CustomerUser, OtpLog
+from .models import CustomerUser, OtpLog, Profile
 from django.utils.text import slugify
 from rest_framework.validators import ValidationError 
 class CustomerUserSerializer(serializers.ModelSerializer):
@@ -187,3 +187,9 @@ class ChangePasswordOtpValidateSerializer(serializers.Serializer):
         return value
     
     
+class ProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Profile
+        fields = ['avatar','bio']
+        

@@ -1,8 +1,9 @@
+from django.db import IntegrityError
 from django.shortcuts import render
-from .models import CustomerUser, OtpLog
+from .models import CustomerUser, OtpLog, Profile
 from . import serializers
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.validators import ValidationError
 from filtering.helpers import  send_otp_email
 from rest_framework_simplejwt.tokens import RefreshToken  # for register and login to check the login..
@@ -229,4 +230,32 @@ class ChangePasswordOtpValidateAPiView(CreateAPIView):
     
         except Exception as e:
             return Response({'error':str(e)})
+
+from rest_framework import status
+
+class ProfileAPiView(ListCreateAPIView):
+    serializer_class = serializers.ProfileSerializer
+    permission_classes = [IsAuthenticated,]
+    
+    def post(self, request, *args, **kwargs):
+        
+        try:
+            
+            # request.data['user'] = request.user.id
+            data = self.get_serializer(data = request.data)
+
+            data.is_valid(raise_exception = True)
+
+            data.save(user = request.user)
+            
+            return Response({'data':data.data})
+        except Exception as e:
+            return Response({'error':str(e),'message':'Profile picture already exists'})
+            
+    
+    def get(self, request, *args, **kwargs):
+        data = self.get_serializer(Profile.objects.all(), many=True).data
+        # data = self.get_serializer(Profile.objects.filter(user=request.user.id), many=True).data  # each user data
+        return Response({'data':data})
+    
     
