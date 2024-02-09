@@ -261,5 +261,3 @@ class ProfileAPiView(ListCreateAPIView):
         data = self.get_serializer(Profile.objects.all(), many=True).data
         # data = self.get_serializer(Profile.objects.filter(user=request.user.id), many=True).data  # each user data
         return Response({'data':data})
-    
-    
