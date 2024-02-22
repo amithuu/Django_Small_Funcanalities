@@ -41,4 +41,26 @@ class CustomerUserSerializer(serializers.ModelSerializer):
         validated_data['username'] = self.generate_unique_username(validated_data['email'])
         return CustomerUser.objects.create_user(**validated_data)
     
+
+# from rest_framework import AuthticationFailed
+# class GoogleSocialAuthSerializer(serializers.Serializer):
+#     auth_token = serializers.CharField()
     
+#     def validated_auth_token(self, auth_token):
+#         user_data = google.Google.validate(auth_token)
+        
+#         try:
+#             user_data = ['sub']
+#         except:
+#             raise serializers.ValidationError('the token is invalid or expired')
+    
+#         if user_data['aud'] != os.environ.get('GOOGLE_CLIENT_ID'):
+#             raise AuthticationFailed('oops, who are you?')
+            
+#         user_id = user_data['sub']
+#         email = user_data['email']
+#         name = user_data['name']
+#         provider = 'google'
+        
+#         return register_social_user(provider=provider, user_id=user_id,  email=email, name=name)
+        

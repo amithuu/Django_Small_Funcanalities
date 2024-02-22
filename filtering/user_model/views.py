@@ -35,3 +35,23 @@ class CustomUserCreateApiView(ListCreateAPIView):
         except Exception as e:
             return Response({'error':str(e)})
     
+    
+# class GoogleSocialAuthView(ListCreateAPIView):
+#     serializer_class = serializers.GoogleSocialAuthSerializer
+    
+#     def post(self,request):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)    
+#         data = ((serializer.validated_data)['auth_token'])
+#         return Response(data)
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+
+def home(request):
+    return render(request, 'home.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
