@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 # ! defining our own user_model..
 AUTH_USER_MODEL = 'user_model.CustomerUser'
 
-SITE_ID = 2
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    'django.contrib.sites',# * For social auth
+    'allauth',# * For social auth
+    'allauth.account',# * For social auth
+    'allauth.socialaccount',# * For social auth
+    'allauth.socialaccount.providers.google',# * For social auth
 
     # ? created app
     'rest_framework',
@@ -53,9 +53,13 @@ INSTALLED_APPS = [
     # 'social_django',
 ]
 
-
+# * For social auth
 SOCIALACCOUNT_PROVIDERS  ={
     'google':{
+        'SCOPE':['profile','email'],
+        'AUTH_PARAMS':{'access_type':'online'}
+    },
+    'github':{
         'SCOPE':['profile','email'],
         'AUTH_PARAMS':{'access_type':'online'}
     }
@@ -146,12 +150,15 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# * For social auth
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-
+# * For social auth
+SITE_ID = 2
+ACCOUNT_EMAIL_VERIFICATION = "none" # ? turns off verification emails. Django automatically sets up an email verification workflow. We do not need this functionality right now.
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_ON_GET = True  # ? directly logs the user out when the logout button is clicked via a GET request. This skips the confirm logout page.

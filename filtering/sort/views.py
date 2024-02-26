@@ -80,4 +80,3 @@ class MovieListAPIView(ListAPIView):
 
         except Exception as e:
             return Response({'message': 'Fail', "error": str(e)})
-    

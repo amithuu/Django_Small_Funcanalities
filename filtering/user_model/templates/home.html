@@ -10,6 +10,8 @@
         {% load  socialaccount %}
         <h2>Google Login</h2>
         <a href = "{% provider_login_url 'google' %}?next=/"> Login With Google</a>
+        {% comment %} <a href = "{% provider_login_url 'github' %}?next=/"> Login With github</a> {% endcomment %}
+        
 
         {%if user.is_authenticated %}
         <p> You are signed in as {{user.email}}</p>

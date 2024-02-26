@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('sort.urls')),
     path('', include('user_model.urls')),
-    path('accounts/', include('allauth.urls'))
+    path('accounts/', include('allauth.urls')) # * For new social auth
 ]
